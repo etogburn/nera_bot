@@ -133,6 +133,12 @@
         </xacro:inertial_sphere>
     </link>
 
+    <gazebo reference="right_caster">
+        <material>Gazebo/White</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
+    </gazebo>
+
     <joint name="left_caster_joint" type="fixed">
         <parent link="base_link"/>
         <child link="left_caster"/>
@@ -156,5 +162,11 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_sphere>
     </link>
+
+    <gazebo reference="left_caster">
+        <material>Gazebo/White</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
+    </gazebo>
 
 </robot>
