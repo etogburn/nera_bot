@@ -2,11 +2,6 @@ twist_mux:
   ros__parameters:
     use_stamped: false
     topics:
-# -
-#   name    : joystick
-#   topic   : cmd_vel_joy
-#   timeout : 0.5
-#   priority: 100
       joystick:
         topic   : cmd_vel_joy
         timeout : 0.5

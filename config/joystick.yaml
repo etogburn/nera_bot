@@ -26,4 +26,4 @@ teleop_node:
 
     require_enable_button: true
 
-    publish_twist_stamped: true
+  #publish_twist_stamped: true

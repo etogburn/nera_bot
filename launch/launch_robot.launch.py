@@ -4,11 +4,14 @@ from ament_index_python.packages import get_package_share_directory
 
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.actions import RegisterEventHandler
+from launch.event_handlers import OnProcessStart
 
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 
@@ -23,57 +26,61 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true'}.items()
+                )]), launch_arguments={'use_sim_time': 'false'}.items()
     )
 
     joystick = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','joystick.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true'}.items()
+                )])
     )
+
 
     twist_mux_params = os.path.join(get_package_share_directory(package_name),'config','twist_mux.yaml')
     twist_mux = Node(
             package="twist_mux",
             executable="twist_mux",
-            parameters=[twist_mux_params, {'use_sim_time': True}],
+            parameters=[twist_mux_params],
             remappings=[('/cmd_vel_out','/diff_cont/cmd_vel_unstamped')]
         )
 
+    # robot_description_content = Command(
+    #     [
+    #         PathJoinSubstitution([FindExecutable(name="xacro")]),
+    #         " ",
+    #         PathJoinSubstitution(
+    #             [FindPackageShare(package_name), "description", "robot.urdf.xacro"]
+    #         ),
+    #     ]
+    # )
 
-    default_world = os.path.join(
-        get_package_share_directory(package_name),
-        'worlds',
-        'empty.world'
-        )    
+    # robot_description = {"robot_description": robot_description_content}
+
     
-    world = LaunchConfiguration('world')
+    robot_description = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
 
-    world_arg = DeclareLaunchArgument(
-        'world',
-        default_value=default_world,
-        description='World to load'
-        )
+    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers.yaml')
 
-    # Include the Gazebo launch file, provided by the ros_gz_sim package
-    gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
-                    launch_arguments={'gz_args': ['-r -v4 ', world], 'on_exit_shutdown': 'true'}.items()
-             )
+    controller_manager = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[{'robot description: ', robot_description},
+                    controller_params_file]
+    )
 
-    # Run the spawner node from the ros_gz_sim package. The entity name doesn't really matter if you only have a single robot.
-    spawn_entity = Node(package='ros_gz_sim', executable='create',
-                        arguments=['-topic', 'robot_description',
-                                   '-name', 'my_bot',
-                                   '-z', '0.1'],
-                        output='screen')
-
+    delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
 
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["diff_cont"],
+    )
+
+    delayed_diff_drive_spawner = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=controller_manager,
+            on_start=[diff_drive_spawner],
+        )
     )
 
     joint_broad_spawner = Node(
@@ -82,24 +89,12 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
-
-    bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
-    ros_gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        arguments=[
-            '--ros-args',
-            '-p',
-            f'config_file:={bridge_params}',
-        ]
+    delayed_joint_broad_spawner = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=controller_manager,
+            on_start=[joint_broad_spawner],
+        )
     )
-
-    # ros_gz_image_bridge = Node(
-    #     package="ros_gz_image",
-    #     executable="image_bridge",
-    #     arguments=["/camera/image_raw"]
-    # )
-
 
 
     # Code for delaying a node (I haven't tested how effective it is)
@@ -125,11 +120,7 @@ def generate_launch_description():
         rsp,
         joystick,
         twist_mux,
-        world_arg,
-        gazebo,
-        spawn_entity,
-        diff_drive_spawner,
-        joint_broad_spawner,
-        ros_gz_bridge,
-        # ros_gz_image_bridge
+        delayed_controller_manager,
+        delayed_diff_drive_spawner,
+        delayed_joint_broad_spawner
     ])
