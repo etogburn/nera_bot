@@ -43,6 +43,23 @@ def generate_launch_description():
             parameters=[twist_mux_params],
             remappings=[('/cmd_vel_out','/diff_cont/cmd_vel_unstamped')]
         )
+    
+    imu_filter_params = os.path.join(get_package_share_directory(package_name),'config','imu_filter.yaml')
+    
+    imu_filter_madgwick = Node(
+            package="imu_filter_madgwick",
+            executable="imu_filter_madgwick_node",
+            parameters=[imu_filter_params],
+            remappings=[('/imu/data_raw','/imu_broadcaster/imu')]
+        )
+    
+    # robot_localization_params = os.path.join(get_package_share_directory(package_name),'config','robot_localization.yaml')
+    
+    # robot_localization = Node(
+    #         package="robot_localization",
+    #         executable="ekf_node",
+    #         parameters=[robot_localization_params],
+    #     )
 
     # robot_description_content = Command(
     #     [
@@ -96,6 +113,18 @@ def generate_launch_description():
         )
     )
 
+    imu_sensor_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["imu_broadcaster"],#, "--controller-manager", "/controller_manager"],
+    )
+
+    delayed_imu_sensor_broadcaster_spawner= RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=controller_manager,
+            on_start=[imu_sensor_broadcaster_spawner],
+        )
+    )
 
     # Code for delaying a node (I haven't tested how effective it is)
     # 
@@ -120,7 +149,10 @@ def generate_launch_description():
         rsp,
         joystick,
         twist_mux,
+        imu_filter_madgwick,
+        # robot_localization,
         delayed_controller_manager,
         delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
+        delayed_joint_broad_spawner,
+        delayed_imu_sensor_broadcaster_spawner
     ])
