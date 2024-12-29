@@ -48,6 +48,13 @@ def generate_launch_description():
             parameters=[imu_filter_params]
         )
 
+    robot_localization_params = os.path.join(get_package_share_directory(package_name),'config','robot_localization.yaml')
+    
+    robot_localization = Node(
+            package="robot_localization",
+            executable="ekf_node",
+            parameters=[robot_localization_params, {'use_sim_time': True}],
+        )
 
     default_world = os.path.join(
         get_package_share_directory(package_name),
@@ -133,6 +140,7 @@ def generate_launch_description():
         joystick,
         twist_mux,
         imu_filter_madgwick,
+        robot_localization,
         world_arg,
         gazebo,
         spawn_entity,
