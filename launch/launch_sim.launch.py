@@ -39,6 +39,14 @@ def generate_launch_description():
             parameters=[twist_mux_params, {'use_sim_time': True}],
             remappings=[('/cmd_vel_out','/diff_cont/cmd_vel_unstamped')]
         )
+    
+    imu_filter_params = os.path.join(get_package_share_directory(package_name),'config','imu_filter.yaml')
+    
+    imu_filter_madgwick = Node(
+            package="imu_filter_madgwick",
+            executable="imu_filter_madgwick_node",
+            parameters=[imu_filter_params]
+        )
 
 
     default_world = os.path.join(
@@ -82,7 +90,6 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
-
     bridge_params = os.path.join(get_package_share_directory(package_name),'config','gz_bridge.yaml')
     ros_gz_bridge = Node(
         package="ros_gz_bridge",
@@ -125,6 +132,7 @@ def generate_launch_description():
         rsp,
         joystick,
         twist_mux,
+        imu_filter_madgwick,
         world_arg,
         gazebo,
         spawn_entity,

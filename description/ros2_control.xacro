@@ -58,13 +58,15 @@
             <state_interface name="position"/>
         </joint>
     </ros2_control>
-    </xacro:if>
-
     <gazebo>
         <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system.so">
             <parameters>$(find nera_bot)/config/my_controllers.yaml</parameters>
             <parameters>$(find nera_bot)/config/gaz_ros2_ctl_use_sim.yaml</parameters>
         </plugin>
     </gazebo>
+
+    </xacro:if>
+
+
 
 </robot>
