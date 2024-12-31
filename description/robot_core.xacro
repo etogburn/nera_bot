@@ -38,7 +38,7 @@
         <visual>
             <origin xyz="0.325 0 .075"/>
             <geometry>
-                <box size="0.65 0.43 0.15"/>
+                <box size="0.65 0.43 0.10"/>
             </geometry>
             <material name="white"/>
         </visual>

@@ -147,5 +147,5 @@ def generate_launch_description():
         diff_drive_spawner,
         joint_broad_spawner,
         ros_gz_bridge,
-        # ros_gz_image_bridge
+        #ros_gz_image_bridge
     ])
