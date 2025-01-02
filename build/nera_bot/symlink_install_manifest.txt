@@ -1,3 +1,5 @@
+/home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/config/D435i_realsense.yaml
+/home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/config/camera.rviz
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/config/empty.yaml
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/config/gaz_ros2_ctl_use_sim.yaml
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/config/gz_bridge.yaml
@@ -13,7 +15,9 @@
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/description/robot.urdf.xacro
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/description/robot_core.xacro
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/description/ros2_control.xacro
+/home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/camera.launch.py
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/joystick.launch.py
+/home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/launch_hardware.launch.py
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/launch_robot.launch.py
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/launch_sim.launch.py
 /home/robot/robot_ws/nera_bot/install/nera_bot/share/nera_bot/launch/rsp.launch.py

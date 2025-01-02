@@ -1,0 +1,20 @@
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+[Unit]
+Description="bringup nera_bot_ros"
+After=network.target
+Wants=network.target
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=robot
+Group=robot
+ExecStart=/usr/sbin/nera_bot_ros-start
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=0 129 200
+
+[Install]
+WantedBy=multi-user.target

@@ -12,7 +12,7 @@ config_path = os.path.join(get_package_share_directory('nera_bot'), 'config', 'D
 # Starting with `realsense_ros` 4.55.1, the `.profile`` parameter is split by stream type.
 # Here, we keep both the old and new parameters for backwards compatibility.
 # https://github.com/IntelRealSense/realsense-ros/pull/3052
-configurable_parameters = [{'name': 'camera_name',                  'default': 'camera', 'description': 'camera unique name'},
+configurable_parameters = [{'name': 'camera_name',                  'default': 'd435i', 'description': 'camera unique name'},
                            {'name': 'camera_namespace',             'default': 'camera', 'description': 'namespace for camera'},
                            {'name': 'serial_no',                    'default': "''", 'description': 'choose device by serial number'},
                            {'name': 'usb_port_id',                  'default': "''", 'description': 'choose device by usb port id'},

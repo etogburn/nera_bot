@@ -1,0 +1,1 @@
+ros2 run robot_upstart uninstall nera_bot_ros

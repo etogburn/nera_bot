@@ -1,0 +1,1 @@
+/home/robot/robot_ws/nera_bot/launch/launch_hardware.launch.py
