@@ -1,5 +1,5 @@
 enable_color: true
-rgb_camera.color_profile: 1280x720x6
+rgb_camera.color_profile: 848x480x6
 depth_module.depth_profile: 848x480x6 #424x240, 480x270, 640x480 848x480, 1280x720
 depth_module.infra_profile: 848x480x6
 enable_depth: true
@@ -8,6 +8,7 @@ enable_sync: true
 publish_tf: true
 tf_publish_rate: 1.0
 pointcloud.enable: false
+accelerate_gpu_with_glsl: true
 
 # {'name': 'camera_name',                  'default': 'camera', 'description': 'camera unique name'},
 # {'name': 'camera_namespace',             'default': 'camera', 'description': 'namespace for camera'},

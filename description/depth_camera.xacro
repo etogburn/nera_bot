@@ -24,6 +24,22 @@
 
     <link name="camera_link_optical"></link>
 
+    <joint name="d435i_joint" type="fixed">
+        <parent link="camera_link"/>
+        <child link="d435i_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="d435i_link"></link>
+
+    <joint name="d435i_camera_joint" type="fixed">
+        <parent link="camera_link"/>
+        <child link="d435i_camera_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="d435i_camera_link"></link>
+
     <gazebo reference="camera_link">
         <material>Gazebo/Red</material>
         <sensor name="camera" type="rgbd_camera">
