@@ -13,6 +13,7 @@
 
 # gz topic published by Sensors plugin (Camera)
 - ros_topic_name: "camera/d435i/color/camera_info"
+#- ros_topic_name: "camera/camera_info"
   gz_topic_name: "camera/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "gz.msgs.CameraInfo"
@@ -20,6 +21,7 @@
 
 # gz topic published by Sensors plugin (Camera image)
 - ros_topic_name: "camera/d435i/color/image_raw"
+#- ros_topic_name: "camera/image_raw"
   gz_topic_name: "camera/image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
@@ -34,6 +36,7 @@
 
 # gz topic published by Sensors plugin (Camera depth image)
 - ros_topic_name: "camera/d435i/depth/image_rect_raw"
+#- ros_topic_name: "camera/depth_image"
   gz_topic_name: "camera/depth_image"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "gz.msgs.Image"
