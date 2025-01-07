@@ -55,6 +55,12 @@ def generate_launch_description():
             executable="ekf_node",
             parameters=[robot_localization_params, {'use_sim_time': True}],
         )
+    
+    depthtolaser_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+        get_package_share_directory(package_name),'launch','depth_to_laser.launch.py'
+        )])
+    )
 
     default_world = os.path.join(
         get_package_share_directory(package_name),
@@ -141,6 +147,7 @@ def generate_launch_description():
         twist_mux,
         imu_filter_madgwick,
         robot_localization,
+        depthtolaser_launch,
         world_arg,
         gazebo,
         spawn_entity,

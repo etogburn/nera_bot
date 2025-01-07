@@ -90,12 +90,22 @@ def set_configurable_parameters(parameters):
     return dict([(param['name'], LaunchConfiguration(param['name'])) for param in parameters])
 
 def generate_launch_description():
+
+     package_name='nera_bot'
+
      realsense_launch = IncludeLaunchDescription(
           PythonLaunchDescriptionSource([os.path.join(
                get_package_share_directory('realsense2_camera'), 'launch'),
                '/rs_launch.py'])
           )
+     
+     depthtolaser_launch = IncludeLaunchDescription(
+               PythonLaunchDescriptionSource([os.path.join(
+               get_package_share_directory(package_name),'launch','depth_to_laser.launch.py'
+               )])
+          )
 
      return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
           realsense_launch,
+          depthtolaser_launch
           ])

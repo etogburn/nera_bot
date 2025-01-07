@@ -34,16 +34,9 @@ def generate_launch_description():
                 )])
     )
 
-    depthtolaser_launch = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory(package_name),'launch','depth_to_laser.launch.py'
-                )])
-    )
-
 
     # Launch them all!
     return LaunchDescription([
         main_hardware_launch,
         camera_launch,
-        depthtolaser_launch
     ])
