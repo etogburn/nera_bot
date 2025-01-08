@@ -11,6 +11,8 @@ Wants=network-online.target
 Type=simple
 User=robot
 Group=robot
+Environment="ROS_DOMAIN_ID=88"
+Environment="ROS_DISTRO=jazzy"
 ExecStart=/usr/sbin/nera_bot_ros-start
 Restart=on-failure
 RestartSec=5
