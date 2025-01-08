@@ -6,9 +6,13 @@ enable_depth: true
 align_depth.enable: true
 enable_sync: true
 publish_tf: true
-tf_publish_rate: 1.0
+tf_publish_rate: 10.0
 pointcloud.enable: false
 accelerate_gpu_with_glsl: true
+enable_motion: true
+enable_gyro: true
+enable_accel: true
+unite_imu_method: 2
 
 # {'name': 'camera_name',                  'default': 'camera', 'description': 'camera unique name'},
 # {'name': 'camera_namespace',             'default': 'camera', 'description': 'namespace for camera'},
