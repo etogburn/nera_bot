@@ -104,8 +104,20 @@ def generate_launch_description():
                get_package_share_directory(package_name),'launch','depth_to_laser.launch.py'
                )])
           )
+     
+     imu_filter_params = os.path.join(get_package_share_directory(package_name),'config','imu_filter.yaml')
+    
+     imu_filter_madgwick = Node(
+            package="imu_filter_madgwick",
+            executable="imu_filter_madgwick_node",
+            name="camera_imu_filter_madgwick",
+            parameters=[imu_filter_params],
+            remappings=[('/imu/data','/camera/d435i/imu/data'),
+                        ('/imu/data_raw','/camera/d435i/imu')]
+        )
 
      return LaunchDescription(declare_configurable_parameters(configurable_parameters) + [
           realsense_launch,
-          depthtolaser_launch
+          depthtolaser_launch,
+          imu_filter_madgwick
           ])

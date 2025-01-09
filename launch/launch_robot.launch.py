@@ -29,6 +29,61 @@ def generate_launch_description():
                 )]), launch_arguments={'use_sim_time': 'false'}.items()
     )
 
+            # Get URDF via xacro
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution(
+                [FindPackageShare(package_name), "description", "robot.urdf.xacro"]
+            ),
+        ]
+    )
+    robot_description = {"robot_description": robot_description_content}
+
+    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers.yaml')
+
+    controller_manager = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[robot_description,
+                    controller_params_file]
+    )
+
+    joint_broad_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_broad"],
+    )
+
+
+    diff_drive_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["diff_cont"],
+    )
+
+
+    imu_sensor_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["imu_broadcaster"],
+    )
+
+    delayed_diff_drive_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_broad_spawner,
+            on_exit=[diff_drive_spawner],
+        )
+    )
+
+    delayed_imu_sensor_broadcaster_spawner= RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_broad_spawner,
+            on_exit=[imu_sensor_broadcaster_spawner],
+        )
+    )
+
     # joystick = IncludeLaunchDescription(
     #             PythonLaunchDescriptionSource([os.path.join(
     #                 get_package_share_directory(package_name),'launch','joystick.launch.py'
@@ -60,60 +115,28 @@ def generate_launch_description():
             executable="ekf_node",
             parameters=[robot_localization_params],
         )
-        # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare(package_name), "description", "robot.urdf.xacro"]
-            ),
-        ]
+    
+    delayed_twist_mux= RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=diff_drive_spawner,
+            on_exit=[twist_mux],
+        )
     )
-    robot_description = {"robot_description": robot_description_content}
-
-    controller_params_file = os.path.join(get_package_share_directory(package_name),'config','my_controllers.yaml')
-
-    controller_manager = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[robot_description,
-                    controller_params_file]
+    delayed_imu_filter_madgwick= RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=diff_drive_spawner,
+            on_exit=[imu_filter_madgwick],
+        )
+    )
+    delayed_robot_localization= RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=diff_drive_spawner,
+            on_exit=[robot_localization],
+        )
     )
 
     # delayed_controller_manager = TimerAction(period=1.0, actions=[controller_manager])
 
-    diff_drive_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["diff_cont"],
-    )
-
-    joint_broad_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_broad"],
-    )
-
-    imu_sensor_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["imu_broadcaster"],
-    )
-
-    delayed_diff_drive_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_broad_spawner,
-            on_exit=[diff_drive_spawner],
-        )
-    )
-
-    delayed_imu_sensor_broadcaster_spawner= RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_broad_spawner,
-            on_exit=[imu_sensor_broadcaster_spawner],
-        )
-    )
 
     # Code for delaying a node (I haven't tested how effective it is)
     # 
@@ -136,12 +159,12 @@ def generate_launch_description():
     # Launch them all!
     return LaunchDescription([
         rsp,
-        # joystick,
-        twist_mux,
-        imu_filter_madgwick,
-        robot_localization,
         controller_manager,
         joint_broad_spawner,
         delayed_diff_drive_spawner,
-        delayed_imu_sensor_broadcaster_spawner
+        delayed_imu_sensor_broadcaster_spawner,
+        # joystick,
+        delayed_twist_mux,
+        delayed_imu_filter_madgwick,
+        delayed_robot_localization,
     ])

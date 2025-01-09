@@ -2,3 +2,8 @@ imu_filter_madgwick:
   ros__parameters:
     use_mag: false
     use_magnetic_field_msg: false
+
+camera_imu_filter_madgwick:
+  ros__parameters:
+    use_mag: false
+    use_magnetic_field_msg: false
