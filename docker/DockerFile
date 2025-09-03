@@ -1,0 +1,48 @@
+# ======================
+# Base build stage
+# ======================
+FROM osrf/ros:jazzy-ros-base as base
+
+# Install build tools and dependencies
+RUN apt update && apt install -y \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    && rm -rf /var/lib/apt/lists/*
+
+# Setup workspace
+WORKDIR /ros2_ws
+COPY ./src ./src
+
+# Resolve dependencies and build
+RUN . /opt/ros/jazzy/setup.sh && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y && \
+    colcon build
+
+# ======================
+# Runtime image for Robot
+# ======================
+FROM osrf/ros:jazzy-ros-base as robot
+
+WORKDIR /ros2_ws
+COPY --from=base /ros2_ws/install /ros2_ws/install
+
+# Source ROS and workspace on container start
+ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/jazzy/setup.bash && source /ros2_ws/install/setup.bash && exec bash"]
+
+# ======================
+# Runtime image for Dev (with GUI tools)
+# ======================
+FROM osrf/ros:jazzy-desktop as dev
+
+RUN apt update && apt install -y \
+    git vim \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /ros2_ws
+COPY --from=base /ros2_ws/install /ros2_ws/install
+
+# GUI env for RViz/Gazebo
+ENV QT_X11_NO_MITSHM=1
+
+ENTRYPOINT ["/bin/bash", "-c", "source /opt/ros/jazzy/setup.bash && source /ros2_ws/install/setup.bash && exec bash"]
