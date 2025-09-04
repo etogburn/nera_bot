@@ -1,1 +1,0 @@
-/home/robot/robot_ws/nera_bot/build/nera_bot/ament_cmake_environment_hooks/local_setup.sh

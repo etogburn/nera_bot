@@ -1,9 +1,0 @@
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/uninstall.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/nera_bot_uninstall.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/test.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/edit_cache.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/rebuild_cache.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/list_install_components.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/install.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/install/local.dir
-/home/robot/robot_ws/nera_bot/build/nera_bot/CMakeFiles/install/strip.dir

@@ -1,1 +1,0 @@
-/home/robot/robot_ws/nera_bot/launch/joystick.launch.py

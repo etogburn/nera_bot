@@ -1,4 +1,0 @@
-Invoking command in '/home/robot/robot_ws/nera_bot/build/nera_bot': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/robot/robot_ws/nera_bot/build/nera_bot -- -j4 -l4
-Invoked command in '/home/robot/robot_ws/nera_bot/build/nera_bot' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/robot/robot_ws/nera_bot/build/nera_bot -- -j4 -l4
-Invoking command in '/home/robot/robot_ws/nera_bot/build/nera_bot': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/robot/robot_ws/nera_bot/build/nera_bot
-Invoked command in '/home/robot/robot_ws/nera_bot/build/nera_bot' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/robot/robot_ws/nera_bot/build/nera_bot
