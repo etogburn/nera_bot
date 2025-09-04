@@ -1,160 +1,188 @@
 amcl:
   ros__parameters:
-    alpha1: 0.2
-    alpha2: 0.2
-    alpha3: 0.2
-    alpha4: 0.2
-    alpha5: 0.2
-    base_frame_id: "base_footprint"
-    beam_skip_distance: 0.5
-    beam_skip_error_threshold: 0.9
-    beam_skip_threshold: 0.3
-    do_beamskip: false
-    global_frame_id: "map"
-    lambda_short: 0.1
-    laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
-    laser_min_range: -1.0
-    laser_model_type: "likelihood_field"
-    max_beams: 60
-    max_particles: 2000
-    min_particles: 500
-    odom_frame_id: "odom"
-    pf_err: 0.05
-    pf_z: 0.99
-    recovery_alpha_fast: 0.0
-    recovery_alpha_slow: 0.0
-    resample_interval: 1
-    robot_model_type: "nav2_amcl::DifferentialMotionModel"
-    save_pose_rate: 0.5
-    sigma_hit: 0.2
-    tf_broadcast: true
-    transform_tolerance: 100.0
-    update_min_a: 0.2
-    update_min_d: 0.25
-    z_hit: 0.5
-    z_max: 0.05
-    z_rand: 0.5
-    z_short: 0.05
-    scan_topic: scan
+    alpha1: 0.2  # Rotational noise due to rotational motion (yaw error).
+    alpha2: 0.2  # Rotational noise due to translational motion (slippage/skid).
+    alpha3: 0.2  # Translational noise due to rotational motion (turning while moving).
+    alpha4: 0.2  # Translational noise due to translational motion (straight-line movement).
+    alpha5: 0.2  # Noise related to velocity commands (affects motion model).
+    base_frame_id: "base_footprint"  # Frame ID representing the robot's base.
+    beam_skip_distance: 0.5  # Distance threshold (in meters) for skipping laser beams with inconsistent readings.
+    beam_skip_error_threshold: 0.9  # Maximum allowable fraction of beams with errors before skipping is applied.
+    beam_skip_threshold: 0.3  # Fraction of beams that must be consistent to avoid skipping.
+    do_beamskip: false  # Enables beam skipping for computational optimization when false.
+    global_frame_id: "map"  # Frame ID used for the global coordinate system.
+    lambda_short: 0.1  # Exponential decay rate for the short range noise model (used in laser likelihood calculations).
+    laser_likelihood_max_dist: 2.0  # Maximum distance (in meters) to consider for likelihood field computation in laser scans.
+    laser_max_range: 100.0  # Maximum range of the laser sensor (in meters); ignores readings beyond this value.
+    laser_min_range: -1.0  # Minimum range of the laser sensor (in meters); ignores readings below this value. Default (-1) means no minimum.
+    laser_model_type: "likelihood_field"  # Model type for laser scan processing (e.g., "beam", "likelihood_field").
+    max_beams: 60  # Maximum number of beams from the laser scan used for particle filter updates.
+    max_particles: 2000  # Maximum number of particles allowed in the particle filter.
+    min_particles: 500  # Minimum number of particles allowed in the particle filter.
+    odom_frame_id: "odom"  # Frame ID for odometry data; represents the robot's pose based on odometry.
+    pf_err: 0.05  # Maximum error tolerance for the particle filter's convergence.
+    pf_z: 0.99  # Minimum confidence level required to resample particles.
+    recovery_alpha_fast: 0.0  # Fast weight recovery parameter for particles; adjusts to rapid changes in the environment.
+    recovery_alpha_slow: 0.0  # Slow weight recovery parameter for particles; adjusts to gradual changes in the environment.
+    resample_interval: 1  # Number of updates before resampling particles.
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"  # Robot motion model type (e.g., differential drive).
+    save_pose_rate: 0.5  # Rate (in seconds) at which the estimated robot pose is saved.
+    sigma_hit: 0.2  # Standard deviation for the Gaussian model of the sensor's hit probability.
+    tf_broadcast: true  # Whether to publish the transform from `map` to `odom` frame.
+    transform_tolerance: 100.0  # Tolerance (in seconds) for transforms to be considered valid.
+    update_min_a: 0.2  # Minimum angular movement (in radians) required to trigger an update.
+    update_min_d: 0.25  # Minimum translational movement (in meters) required to trigger an update.
+    z_hit: 0.5  # Weight for the sensor's hit model (accurate matches between laser scan and map).
+    z_max: 0.05  # Weight for the max range noise model (beams beyond max range).
+    z_rand: 0.5  # Weight for random measurements in the sensor model.
+    z_short: 0.05  # Weight for the short range noise model (unexpectedly short measurements).
+    scan_topic: scan  # Name of the topic providing laser scan data.
+
 
 bt_navigator:
   ros__parameters:
-    global_frame: map
-    robot_base_frame: base_link
-    odom_topic: /odom
-    bt_loop_duration: 10
-    default_server_timeout: 20
-    wait_for_service_timeout: 1000
-    action_server_result_timeout: 900.0
-    navigators: ["navigate_to_pose", "navigate_through_poses"]
-    navigate_to_pose:
-      plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
-    navigate_through_poses:
-      plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"
-    # 'default_nav_through_poses_bt_xml' and 'default_nav_to_pose_bt_xml' are use defaults:
-    # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
-    # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
-    # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
+    global_frame: map  # The global reference frame for navigation, typically "map".
+    robot_base_frame: base_link  # The frame attached to the robot's base, often "base_link".
+    odom_topic: /odom  # Topic name for odometry data used by the navigation stack.
+    bt_loop_duration: 10  # Time (in milliseconds) between successive iterations of the behavior tree execution loop.
+    default_server_timeout: 20  # Default timeout (in seconds) for service requests made to behavior tree nodes.
+    wait_for_service_timeout: 1000  # Maximum time (in milliseconds) to wait for a service to become available.
+    action_server_result_timeout: 900.0  # Time (in seconds) to wait for an action server to provide a result.
+    navigators:  # List of behavior tree navigators to load and execute.
+      - "navigate_to_pose"  # Navigator used for navigating to a single pose goal.
+      - "navigate_through_poses"  # Navigator used for navigating through multiple pose goals in sequence.
+    navigate_to_pose:  # Configuration for the "navigate_to_pose" behavior tree navigator.
+      plugin: "nav2_bt_navigator::NavigateToPoseNavigator"  # Plugin implementing the "navigate to pose" behavior tree.
+    navigate_through_poses:  # Configuration for the "navigate_through_poses" behavior tree navigator.
+      plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"  # Plugin implementing the "navigate through poses" behavior tree.
 
-    # plugin_lib_names is used to add custom BT plugins to the executor (vector of strings).
-    # Built-in plugins are added automatically
+    # 'default_nav_through_poses_bt_xml' and 'default_nav_to_pose_bt_xml' parameters:
+    # These parameters define the default behavior tree XML files used for navigation.
+    # By default, the following XML files are used for replanning and recovery:
+    # - nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
+    # - nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
+    # You can set these here or via a RewrittenYaml remap in a parent launch file.
+
+    # plugin_lib_names:
+    # A list of plugin library names (vector of strings) to add custom behavior tree (BT) plugins to the executor.
+    # Built-in plugins are automatically included, so this is optional unless you're using custom BT nodes.
     # plugin_lib_names: []
 
-    error_code_names:
-      - compute_path_error_code
-      - follow_path_error_code
+    error_code_names:  # Names of error codes used for debugging and recovery during navigation.
+      - compute_path_error_code  # Error code for path computation failures.
+      - follow_path_error_code  # Error code for path following failures.
 
 controller_server:
   ros__parameters:
-    controller_frequency: 5.0
-    costmap_update_timeout: 0.30
-    min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
-    min_theta_velocity_threshold: 0.001
-    failure_tolerance: 0.3
-    progress_checker_plugins: ["progress_checker"]
-    goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
-    controller_plugins: ["FollowPath"]
-    use_realtime_priority: false
+    controller_frequency: 5.0  # Frequency (Hz) at which the controller runs.
+    costmap_update_timeout: 0.30  # Maximum time (seconds) to wait for the costmap update before stopping.
+    min_x_velocity_threshold: 0.001  # Minimum threshold for the robot's x-axis velocity.
+    min_y_velocity_threshold: 0.5  # Minimum threshold for the robot's y-axis velocity.
+    min_theta_velocity_threshold: 0.001  # Minimum threshold for the robot's angular (theta) velocity.
+    failure_tolerance: 0.3  # Time (seconds) allowed for the robot to fail before recovery is triggered.
+    progress_checker_plugins: ["progress_checker"]  # List of plugins to monitor navigation progress.
+    goal_checker_plugins: ["general_goal_checker"]  # List of plugins to verify goal conditions.
+    controller_plugins: ["FollowPath"]  # List of controller plugins to execute paths.
+    use_realtime_priority: false  # If true, assigns real-time priority to the controller.
 
     # Progress checker parameters
     progress_checker:
-      plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      plugin: "nav2_controller::SimpleProgressChecker"  # Plugin used to check if progress is being made.
+      required_movement_radius: 0.5  # Minimum distance (meters) the robot must move within the timeout.
+      movement_time_allowance: 10.0  # Maximum time (seconds) allowed without significant movement.
+
     # Goal checker parameters
-    #precise_goal_checker:
-    #  plugin: "nav2_controller::SimpleGoalChecker"
-    #  xy_goal_tolerance: 0.25
-    #  yaw_goal_tolerance: 0.25
-    #  stateful: True
+    # precise_goal_checker:
+    #   plugin: "nav2_controller::SimpleGoalChecker"
+    #   xy_goal_tolerance: 0.25  # Distance tolerance (meters) to consider the goal reached.
+    #   yaw_goal_tolerance: 0.25  # Angular tolerance (radians) to consider the goal reached.
+    #   stateful: True  # If true, keeps state between checks.
+
     general_goal_checker:
-      stateful: True
-      plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      stateful: True  # If true, keeps state between checks.
+      plugin: "nav2_controller::SimpleGoalChecker"  # Plugin used to check if the goal has been reached.
+      xy_goal_tolerance: 0.25  # Distance tolerance (meters) to consider the goal reached.
+      yaw_goal_tolerance: 0.25  # Angular tolerance (radians) to consider the goal reached.
+
+    # FollowPath plugin parameters
     FollowPath:
-      plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 56
-      model_dt: 0.20
-      batch_size: 2000
-      ax_max: 3.0
-      ax_min: -3.0
-      ay_max: 3.0
-      az_max: 3.5
-      vx_std: 0.25
-      vy_std: 0.2
-      wz_std: 0.4
-      vx_max: 0.5
-      vx_min: -0.35
-      vy_max: 0.5
-      wz_max: 1.9
-      iteration_count: 1
-      prune_distance: 1.7
-      transform_tolerance: 100.0
-      temperature: 0.3
-      gamma: 0.015
-      motion_model: "DiffDrive"
-      visualize: true
-      regenerate_noises: true
+      plugin: "nav2_mppi_controller::MPPIController"  # Plugin for the controller to follow paths.
+      time_steps: 56  # Number of time steps to model trajectories.
+      model_dt: 0.20  # Time (seconds) per time step in the trajectory model.
+      batch_size: 2000  # Number of samples generated in each iteration.
+      ax_max: 3.0  # Maximum linear acceleration (m/s^2) in the x-direction.
+      ax_min: -3.0  # Minimum linear acceleration (m/s^2) in the x-direction.
+      ay_max: 3.0  # Maximum linear acceleration (m/s^2) in the y-direction.
+      az_max: 3.5  # Maximum angular acceleration (radians/s^2).
+      vx_std: 0.25  # Standard deviation for velocity in x-direction.
+      vy_std: 0.2  # Standard deviation for velocity in y-direction.
+      wz_std: 0.4  # Standard deviation for angular velocity (z-axis).
+      vx_max: 0.5  # Maximum linear velocity (m/s) in x-direction.
+      vx_min: -0.35  # Minimum linear velocity (m/s) in x-direction.
+      vy_max: 0.5  # Maximum linear velocity (m/s) in y-direction.
+      wz_max: 1.9  # Maximum angular velocity (radians/s).
+      iteration_count: 1  # Number of iterations for optimization.
+      prune_distance: 1.7  # Distance (meters) to prune the global plan.
+      transform_tolerance: 100.0  # Tolerance (ms) for TF transforms.
+      temperature: 0.3  # Temperature parameter for MPPI optimization.
+      gamma: 0.015  # Discount factor for cost calculations.
+      motion_model: "DiffDrive"  # Motion model used for trajectory generation.
+      visualize: true  # If true, enables trajectory visualization in RViz.
+      regenerate_noises: true  # If true, regenerates noise samples during trajectory optimization.
+
       TrajectoryVisualizer:
-        trajectory_step: 5
-        time_step: 3
+        trajectory_step: 5  # Step interval for trajectory visualization.
+        time_step: 3  # Time interval (seconds) for visualization steps.
+
       AckermannConstraints:
-        min_turning_r: 0.2
+        min_turning_r: 0.2  # Minimum turning radius (meters) for Ackermann steering.
+
+      # List of critics used to evaluate trajectories
       critics: [
         "ConstraintCritic", "CostCritic", "GoalCritic",
         "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic",
-        "PathAngleCritic", "PreferForwardCritic"]
+        "PathAngleCritic", "PreferForwardCritic"
+      ]
+
+      # ConstraintCritic parameters
       ConstraintCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 4.0
+        enabled: true  # If true, enables this critic.
+        cost_power: 1  # Power applied to the cost function.
+        cost_weight: 4.0  # Weight for the critic in trajectory scoring.
+
+      # GoalCritic parameters
       GoalCritic:
         enabled: true
         cost_power: 1
         cost_weight: 5.0
-        threshold_to_consider: 1.4
+        threshold_to_consider: 1.4  # Threshold distance (meters) to consider the goal.
+
+      # GoalAngleCritic parameters
       GoalAngleCritic:
         enabled: true
         cost_power: 1
         cost_weight: 3.0
-        threshold_to_consider: 0.5
+        threshold_to_consider: 0.5  # Threshold angle (radians) to consider alignment.
+
+      # PreferForwardCritic parameters
       PreferForwardCritic:
         enabled: true
         cost_power: 1
         cost_weight: 5.0
         threshold_to_consider: 0.5
+
+      # CostCritic parameters
       CostCritic:
         enabled: true
         cost_power: 1
         cost_weight: 3.81
-        critical_cost: 300.0
-        consider_footprint: true
-        collision_cost: 1000000.0
-        near_goal_distance: 1.0
-        trajectory_point_step: 2
+        critical_cost: 300.0  # Cost value considered critical for a trajectory.
+        consider_footprint: true  # If true, considers the robot's footprint in cost calculations.
+        collision_cost: 1000000.0  # Cost for trajectories that lead to collisions.
+        near_goal_distance: 1.0  # Distance to consider for near-goal scoring.
+        trajectory_point_step: 2  # Step interval for trajectory points.
+
+      # PathAlignCritic parameters
       PathAlignCritic:
         enabled: true
         cost_power: 1
@@ -164,12 +192,16 @@ controller_server:
         threshold_to_consider: 0.5
         offset_from_furthest: 20
         use_path_orientations: false
+
+      # PathFollowCritic parameters
       PathFollowCritic:
         enabled: true
         cost_power: 1
         cost_weight: 5.0
         offset_from_furthest: 5
         threshold_to_consider: 1.4
+
+      # PathAngleCritic parameters
       PathAngleCritic:
         enabled: true
         cost_power: 1
@@ -177,11 +209,14 @@ controller_server:
         offset_from_furthest: 4
         threshold_to_consider: 0.5
         max_angle_to_furthest: 1.0
-        mode: 0
+        mode: 0  # Mode of operation for this critic.
+
+      # Uncomment and configure if needed
       # TwirlingCritic:
       #   enabled: true
       #   twirling_cost_power: 1
       #   twirling_cost_weight: 10.0
+
 
 local_costmap:
   local_costmap:
